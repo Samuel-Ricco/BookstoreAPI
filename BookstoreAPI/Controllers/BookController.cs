@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using Dapper;
 using BookstoreAPI.Repo;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace BookstoreAPI.Controllers
 {
@@ -27,6 +28,41 @@ namespace BookstoreAPI.Controllers
                 return Ok(books);
             }
             else { return NotFound(); }
+        }
+
+        [HttpGet("GetById/{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var book = await _booksRepo.GetById(id);
+            if (book != null)
+            {
+                return Ok(book);
+            }
+            else { return NotFound(); }
+        }
+
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromBody] Book book)
+        {
+            var result = await _booksRepo.Create(book);
+
+            return Ok(result);
+        }
+
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update([FromBody] Book book, int id)
+        {
+            var result = await _booksRepo.Update(book, id);
+
+            return Ok(result);
+        }
+
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _booksRepo.Delete(id);
+
+            return Ok(result);
         }
     }
 }
