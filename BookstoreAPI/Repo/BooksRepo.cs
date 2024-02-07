@@ -2,6 +2,7 @@
 using BookstoreAPI.Models;
 using Dapper;
 using System.Data;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace BookstoreAPI.Repo
 {
@@ -16,14 +17,14 @@ namespace BookstoreAPI.Repo
         public async Task<string> Create(Book book)
         {
             string response = string.Empty;
-            string query = "INSERT INTO books(title, description, author, releaseYear, isAvailable)" +
-                                "values (@title, @description, @author, @releaseYear, @isAvailable) ";
+            string query = "INSERT INTO books(title, description, author, releaseYear, IsAvailable)" +
+                                "values (@title, @description, @author, @releaseYear, @IsAvailable) ";
             var parameters = new DynamicParameters();
             parameters.Add("title", book.Title, DbType.String);
             parameters.Add("description", book.Description, DbType.String);
             parameters.Add("author", book.Author, DbType.String);
             parameters.Add("releaseYear", book.ReleaseYear, DbType.Int16);
-            parameters.Add("isAvailable", book.IsAvailabe, DbType.Boolean);
+            parameters.Add("IsAvailable", book.IsAvailable, DbType.Boolean);
             using (var connection = this.ctx.CreateConnection())
             {
                 await connection.ExecuteAsync(query, parameters);
@@ -61,13 +62,13 @@ namespace BookstoreAPI.Repo
             {
                 var book = await connection.QueryFirstOrDefaultAsync<Book>(query, new { id });
                 return book;
-            }
+            }   
         }
 
         public async Task<string> Update(Book book, int id)
         {
             string response = string.Empty;
-            string query = "UPDATE TABLA books SET title= @title, description=@description, author=@author, releaseYear=@releaseYear, isAvailable=@isAvailable";
+            string query = "UPDATE books SET title = @title, description = @description, author = @author, releaseYear = @releaseYear, isAvailable = @isAvailable WHERE id = @id";
             var parameters = new DynamicParameters();
 
             parameters.Add("id", id, DbType.Int16);
@@ -75,7 +76,8 @@ namespace BookstoreAPI.Repo
             parameters.Add("description", book.Description, DbType.String);
             parameters.Add("author", book.Author, DbType.String);
             parameters.Add("releaseYear", book.ReleaseYear, DbType.Int16);
-            parameters.Add("isAvailable", book.IsAvailabe, DbType.Boolean);
+            parameters.Add("isAvailable", book.IsAvailable, DbType.Boolean); // Usa "isAvailable" invece di "IsAvailable"
+
             using (var connection = this.ctx.CreateConnection())
             {
                 await connection.ExecuteAsync(query, parameters);
@@ -83,5 +85,6 @@ namespace BookstoreAPI.Repo
             }
             return response;
         }
+
     }
 }
