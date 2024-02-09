@@ -46,7 +46,14 @@ namespace BookstoreAPI.Controllers
         {
             var result = await _booksRepo.Create(book);
 
-            return Ok(result);
+            if (result == "pass")
+            {
+                return Ok("Book created successfully");
+            }
+            else
+            {
+                return BadRequest("Failed to create book");
+            }
         }
 
         [HttpPut("Update")]
@@ -62,7 +69,14 @@ namespace BookstoreAPI.Controllers
         {
             var result = await _booksRepo.Delete(id);
 
-            return Ok(result);
+            if (result == "pass")
+            {
+                return Ok("Book deleted successfully");
+            }
+            else
+            {
+                return NotFound("Failed to delete book");
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ namespace BookstoreAPI.Repo
             parameters.Add("author", book.Author, DbType.String);
             parameters.Add("releaseYear", book.ReleaseYear, DbType.Int16);
             parameters.Add("IsAvailable", book.IsAvailable, DbType.Boolean);
+
             using (var connection = this.ctx.CreateConnection())
             {
                 await connection.ExecuteAsync(query, parameters);
@@ -39,8 +40,15 @@ namespace BookstoreAPI.Repo
             string query = "DELETE FROM books WHERE id = @id";
             using (var connection = this.ctx.CreateConnection())
             {
-                var book = await connection.ExecuteAsync(query, new { id });
-                response = "pass";
+                var rowsAffected = await connection.ExecuteAsync(query, new { id });
+                if (rowsAffected > 0)
+                {
+                    response = "pass";
+                }
+                else
+                {
+                    response = "fail";
+                }
             }
             return response;
         }
